@@ -87,9 +87,9 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             val storehigh = Uri.parse("file://" + storePath)
             val storehigha = "${Environment.DIRECTORY_PICTURES}/koi"
 
-            println (storePath)
-            println (storehigh)
-            println (storehigha)
+            //println (storePath)
+            //println (storehigh)
+            //println (storehigha)
 
             val appDir = File(storePath)
             if (!appDir.exists()) {
