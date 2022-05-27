@@ -82,9 +82,9 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             }
             return applicationContext?.contentResolver?.insert(uri, values)!!
         } else {
-            val storePath = Environment.getExternalStorageDirectory().absolutePath + File.separator + Environment.DIRECTORY_PICTURES
-            val storetest = Environment.getExternalStorageDirectory().absolutePath + File.separator
-            println (storetest)
+            val storePath = Environment.getExternalStorageDirectory().absolutePath + File.separator + Environment.DIRECTORY_PICTURES + "koi/"
+            //val storetest = Environment.getExternalStorageDirectory().absolutePath + File.separator
+            //println (storetest)
             val appDir = File(storePath)
             if (!appDir.exists()) {
                 appDir.mkdir()
@@ -92,6 +92,7 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             if (extension.isNotEmpty()) {
                 fileName += (".$extension")
             }
+            context!!.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + storePath)))
             return Uri.fromFile(File(appDir, fileName))
         }
     }
