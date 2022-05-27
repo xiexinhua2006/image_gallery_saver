@@ -65,9 +65,7 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
             //检测koi文件夹
             val PATH = "/storage/emulate/0/pictures/koi/"
-            val directoryName: String = PATH.concat(this.getClassName())
-            //val fileName: String = id + getTimeStamp().toString() + ".txt"
-            val koi_directory = File(directoryName)
+            val koi_directory = File(PATH)
             if (!koi_directory.exists()) {
                 koi_directory.mkdir()
                 // If you require it to make the entire directory path including parents,
@@ -88,9 +86,7 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
 
             //检测koi文件夹
             val PATH = "/storage/emulate/0/pictures/koi/"
-            val directoryName: String = PATH.concat(this.getClassName())
-            //val fileName: String = id + getTimeStamp().toString() + ".txt"
-            val koi_directory = File(directoryName)
+            val koi_directory = File(PATH)
             if (!koi_directory.exists()) {
                 koi_directory.mkdir()
                 // If you require it to make the entire directory path including parents,
