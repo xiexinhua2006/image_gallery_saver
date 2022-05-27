@@ -54,7 +54,27 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
         }
 
     }
+    //获取存储权限
+    private fun hasWriteStoragePermission(): Boolean =
+            ContextCompat.checkSelfPermission(
+                    context,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
 
+    private val storeImagesQue = ArrayDeque<StoreImageRequest>()
+
+    override fun onMethodCall(call: MethodCall, result: Result) {
+        onMethodCalled(StoreImageRequest(call.method, call.arguments(), result))
+    }
+
+    private fun requestStoragePermission() {
+        ActivityCompat.requestPermissions(
+                context,
+                arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                STORAGE_PERMISSION_REQUEST
+        )
+    }
+    //
 
     private fun generateUri(extension: String = "", name: String? = null): Uri {
         var fileName = name ?: System.currentTimeMillis().toString()
