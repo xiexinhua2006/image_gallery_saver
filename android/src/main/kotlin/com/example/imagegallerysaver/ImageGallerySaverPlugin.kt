@@ -103,6 +103,12 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
         } else {
             var uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
+            if (!hasWriteStoragePermission()) {
+                storeImagesQue.add(request)
+                requestStoragePermission()
+                return
+            }
+
             val PATH = "${Environment.DIRECTORY_PICTURES}/koi"
             val koi_directory = File(PATH)
             if (!koi_directory.exists()) {
