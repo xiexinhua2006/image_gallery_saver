@@ -92,17 +92,7 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             }
             return Uri.fromFile(File(appDir, fileName))
         }
-
-            val storePath = PATH + File.separator + Environment.DIRECTORY_PICTURES
-            val appDir = File(storePath)
-            if (!appDir.exists()) {
-                appDir.mkdir()
-            }
-            if (extension.isNotEmpty()) {
-                fileName += (".$extension")
-            }
-            return Uri.fromFile(File(appDir, fileName))
-        }
+    }
 
     private fun getMIMEType(extension: String): String? {
         var type: String? = null;
