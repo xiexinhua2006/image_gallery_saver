@@ -72,7 +72,7 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
                 // use directory.mkdirs(); here instead.
             }
 
-            values.put(koi_directory, Environment.DIRECTORY_PICTURES)
+            values.put(PATH, Environment.DIRECTORY_PICTURES)
             val mimeType = getMIMEType(extension)
             if (!TextUtils.isEmpty(mimeType)) {
                 values.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
@@ -93,7 +93,7 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
                 // use directory.mkdirs(); here instead.
             }
 
-            val storePath = koi_directory + File.separator + Environment.DIRECTORY_PICTURES
+            val storePath = PATH + File.separator + Environment.DIRECTORY_PICTURES
             val appDir = File(storePath)
             if (!appDir.exists()) {
                 appDir.mkdir()
@@ -114,6 +114,13 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     private fun saveImageToGallery(bmp: Bitmap, quality: Int, name: String?): HashMap<String, Any?> {
+        val PATH = "/storage/emulate/0/pictures/koi/"
+        val koi_directory = File(PATH)
+        if (!koi_directory.exists()) {
+            koi_directory.mkdir()
+            // If you require it to make the entire directory path including parents,
+            // use directory.mkdirs(); here instead.
+        }
         val context = applicationContext
         val fileUri = generateUri("jpg", name = name)
         return try {
@@ -122,7 +129,7 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             bmp.compress(Bitmap.CompressFormat.JPEG, quality, fos)
             fos.flush()
             fos.close()
-            context!!.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, koi_directory))
+            context!!.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, PATH))
             bmp.recycle()
             SaveResultModel(fileUri.toString().isNotEmpty(), fileUri.toString(), null).toHashMap()
         } catch (e: IOException) {
