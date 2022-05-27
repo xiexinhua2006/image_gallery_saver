@@ -58,13 +58,19 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
 
     private fun generateUri(extension: String = "", name: String? = null): Uri {
         var fileName = name ?: System.currentTimeMillis().toString()
-        
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             var uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
+            val PATH = "${Environment.DIRECTORY_PICTURES}/koi/"
+            val koi_directory = File(PATH)
+            if (!koi_directory.exists()) {
+                koi_directory.mkdir()
+            }
+
             val values = ContentValues()
             values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+            values.put(MediaStore.MediaColumns.RELATIVE_PATH, PATH)
             val mimeType = getMIMEType(extension)
             if (!TextUtils.isEmpty(mimeType)) {
                 values.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
@@ -75,7 +81,15 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             }
             return applicationContext?.contentResolver?.insert(uri, values)!!
         } else {
-            val storePath = Environment.getExternalStorageDirectory().absolutePath + File.separator + Environment.DIRECTORY_PICTURES
+            var uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+
+            val PATH = "${Environment.DIRECTORY_PICTURES}/koi"
+            val koi_directory = File(PATH)
+            if (!koi_directory.exists()) {
+                koi_directory.mkdir()
+            }
+
+            val storePath = PATH + File.separator + Environment.DIRECTORY_PICTURES
             val appDir = File(storePath)
             if (!appDir.exists()) {
                 appDir.mkdir()
@@ -96,6 +110,13 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     private fun saveImageToGallery(bmp: Bitmap, quality: Int, name: String?): HashMap<String, Any?> {
+
+        val PATH = "${Environment.DIRECTORY_PICTURES}/koi"
+        val koi_directory = File(PATH)
+        if (!koi_directory.exists()) {
+            koi_directory.mkdir()
+        }
+
         val context = applicationContext
         val fileUri = generateUri("jpg", name = name)
         return try {
@@ -104,7 +125,7 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             bmp.compress(Bitmap.CompressFormat.JPEG, quality, fos)
             fos.flush()
             fos.close()
-            context!!.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, fileUri))
+            context!!.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, PATH))
             bmp.recycle()
             SaveResultModel(fileUri.toString().isNotEmpty(), fileUri.toString(), null).toHashMap()
         } catch (e: IOException) {
