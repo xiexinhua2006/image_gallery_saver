@@ -125,7 +125,8 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             bmp.compress(Bitmap.CompressFormat.JPEG, quality, fos)
             fos.flush()
             fos.close()
-            context!!.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, koi_directory))
+            val PATH_KOI = "${Environment.DIRECTORY_PICTURES}/koi"
+            context!!.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + "${Environment.DIRECTORY_PICTURES}/koi")))
             bmp.recycle()
             SaveResultModel(fileUri.toString().isNotEmpty(), fileUri.toString(), null).toHashMap()
         } catch (e: IOException) {
