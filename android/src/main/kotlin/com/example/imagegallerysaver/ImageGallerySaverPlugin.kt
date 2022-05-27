@@ -55,16 +55,26 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
 
     }
 
-
     private fun generateUri(extension: String = "", name: String? = null): Uri {
         var fileName = name ?: System.currentTimeMillis().toString()
-        
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             var uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
             val values = ContentValues()
             values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+            //检测koi文件夹
+            val PATH = "/storage/emulate/0/pictures/koi/"
+            val directoryName: String = PATH.concat(this.getClassName())
+            //val fileName: String = id + getTimeStamp().toString() + ".txt"
+            val koi_directory = File(directoryName)
+            if (!koi_directory.exists()) {
+                koi_directory.mkdir()
+                // If you require it to make the entire directory path including parents,
+                // use directory.mkdirs(); here instead.
+            }
+
+            values.put(koi_directory, Environment.DIRECTORY_PICTURES)
             val mimeType = getMIMEType(extension)
             if (!TextUtils.isEmpty(mimeType)) {
                 values.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
@@ -75,7 +85,19 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             }
             return applicationContext?.contentResolver?.insert(uri, values)!!
         } else {
-            val storePath = Environment.getExternalStorageDirectory().absolutePath + File.separator + Environment.DIRECTORY_PICTURES
+
+            //检测koi文件夹
+            val PATH = "/storage/emulate/0/pictures/koi/"
+            val directoryName: String = PATH.concat(this.getClassName())
+            //val fileName: String = id + getTimeStamp().toString() + ".txt"
+            val koi_directory = File(directoryName)
+            if (!koi_directory.exists()) {
+                koi_directory.mkdir()
+                // If you require it to make the entire directory path including parents,
+                // use directory.mkdirs(); here instead.
+            }
+
+            val storePath = koi_directory + File.separator + Environment.DIRECTORY_PICTURES
             val appDir = File(storePath)
             if (!appDir.exists()) {
                 appDir.mkdir()
@@ -132,6 +154,12 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             fileInputStream.close()
 
             context!!.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, fileUri))
+
+            Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            Uri uri = Uri.fromFile(new File(path));
+            intent.setData(uri);
+            activity.sendBroadcast(intent);
+
             SaveResultModel(fileUri.toString().isNotEmpty(), fileUri.toString(), null).toHashMap()
         } catch (e: IOException) {
             SaveResultModel(false, null, e.toString()).toHashMap()
