@@ -8,6 +8,8 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
 import android.os.Build
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import android.provider.MediaStore
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.BinaryMessenger
@@ -26,6 +28,7 @@ import android.webkit.MimeTypeMap
 class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
     private var applicationContext: Context? = null
     private var methodChannel: MethodChannel? = null
+    private const val STORAGE_PERMISSION_REQUEST = 3
 
 
     companion object {
