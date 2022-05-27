@@ -83,7 +83,7 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             return applicationContext?.contentResolver?.insert(uri, values)!!
         } else {
             val storePath = Environment.getExternalStorageDirectory().absolutePath + File.separator + Environment.DIRECTORY_PICTURES
-            println (Environment.getExternalStorageDirectory())
+            println (storePath = Environment.getExternalStorageDirectory().absolutePath + File.separator)
             val appDir = File(storePath)
             if (!appDir.exists()) {
                 appDir.mkdir()
