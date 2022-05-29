@@ -100,9 +100,10 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
                 fileName += (".$extension")
             }
             val context = applicationContext
-            println (fileName)
+            //println (fileName)
             //context!!.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + storePath)))
             //MediaScannerConnection.scanFile(context, new String[]{storePath}, null, null)
+            //文件绝对路径
             val absfilePath = storePath + "/" + fileName
             //println (absfilePath)
             MediaScannerConnection.scanFile(context
@@ -122,6 +123,7 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
 
     private fun saveImageToGallery(bmp: Bitmap, quality: Int, name: String?): HashMap<String, Any?> {
 
+        var fileName = name ?: System.currentTimeMillis().toString()
         val PATH = "${Environment.DIRECTORY_PICTURES}/koi"
         val koi_directory = File(PATH)
         if (!koi_directory.exists()) {
@@ -137,7 +139,8 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             fos.flush()
             fos.close()
             val PATH_KOI = "${Environment.DIRECTORY_PICTURES}/koi"
-            context!!.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + "${Environment.DIRECTORY_PICTURES}/koi")))
+            val PATH_KOI_IMAGE = PATH_KOI + "/" + fileName
+            context!!.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + PATH_KOI_IMAGE)))
             bmp.recycle()
             SaveResultModel(fileUri.toString().isNotEmpty(), fileUri.toString(), null).toHashMap()
         } catch (e: IOException) {
