@@ -3,6 +3,7 @@ package com.example.imagegallerysaver
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.media.MediaScannerConnection;
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -99,7 +100,8 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
                 fileName += (".$extension")
             }
             val context = applicationContext
-            context!!.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + storePath)))
+            //context!!.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + storePath)))
+            MediaScannerConnection.scanFile(context, new String[]{storePath}, null, null);
             return Uri.fromFile(File(appDir, fileName))
         }
     }
