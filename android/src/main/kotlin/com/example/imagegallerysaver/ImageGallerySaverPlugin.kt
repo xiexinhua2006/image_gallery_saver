@@ -103,8 +103,8 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             println (fileName)
             //context!!.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + storePath)))
             //MediaScannerConnection.scanFile(context, new String[]{storePath}, null, null)
-            val absfilePath = storePath + fileName
-            println (absfilePath)
+            val absfilePath = storePath + "/" + fileName
+            //println (absfilePath)
             MediaScannerConnection.scanFile(context
                     , arrayOf(absfilePath)
                     , arrayOf("image/jpeg"), null)
