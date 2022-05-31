@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 
 class ImageGallerySaver {
   static const MethodChannel _channel =
@@ -23,7 +24,7 @@ class ImageGallerySaver {
       'name': name,
       'isReturnImagePathOfIOS': isReturnImagePathOfIOS
     });
-    return result;
+    return compute(result);
   }
 
   /// Save the PNG，JPG，JPEG image or video located at [file] to the local device media gallery.
