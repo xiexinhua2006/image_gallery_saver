@@ -6,6 +6,9 @@
 
 We use the `image_picker` plugin to select images from the Android and iOS image library, but it can't save images to the gallery. This plugin can provide this feature.
 
+##Notice
+The main save path change to pictures/koi
+
 ## Usage
 
 To use this plugin, add `image_gallery_saver` as a dependency in your pubspec.yaml file. For example:
