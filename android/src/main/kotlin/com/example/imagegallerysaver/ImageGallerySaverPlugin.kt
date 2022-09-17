@@ -22,6 +22,8 @@ import java.io.FileInputStream
 import java.io.IOException
 import android.text.TextUtils
 import android.webkit.MimeTypeMap
+//import androidx.lifecycle.*
+import kotlinx.coroutines.*
 
 
 class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
@@ -108,7 +110,7 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             //println (absfilePath)
             MediaScannerConnection.scanFile(context
                     , arrayOf(absfilePath)
-                    , arrayOf("image/png"), null)
+                    , arrayOf("image/jpeg"), null)
             return Uri.fromFile(File(appDir, fileName))
         }
     }
@@ -121,7 +123,15 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
         return type
     }
 
-    private fun saveImageToGallery(bmp: Bitmap, quality: Int, name: String?): HashMap<String, Any?> {
+    private fun saveImageToGallery(bmp: Bitmap, quality: Int, name: String?){
+        globalscope.launch{
+            withContext(Dispatchers.IO){
+                saveToKoi(bmp, quality, name)
+            }
+        }
+    }
+
+    private fun saveToKoi(bmp: Bitmap, quality: Int, name: String?): HashMap<String, Any?>{
 
         var fileName = name ?: System.currentTimeMillis().toString()
         val PATH = "${Environment.DIRECTORY_PICTURES}/koi"
@@ -131,17 +141,14 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
         }
 
         val context = applicationContext
-        val fileUri = generateUri("png", name = name)
+        val fileUri = generateUri("jpg", name = name)
         return try {
             val fos = context?.contentResolver?.openOutputStream(fileUri)!!
             println("ImageGallerySaverPlugin $quality")
-            viewModelScope.launch{
-                withContext(Dispatchers.IO){
-                    bmp.compress(Bitmap.CompressFormat.PNG, quality, fos)
-                    fos.flush()
-                    fos.close()
-                }
-            }
+            bmp.compress(Bitmap.CompressFormat.JPEG, quality, fos)
+            fos.flush()
+            fos.close()
+
             val PATH_KOI = "${Environment.DIRECTORY_PICTURES}/koi"
             val PATH_KOI_IMAGE = PATH_KOI + "/" + fileName
             context!!.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + PATH_KOI_IMAGE)))
