@@ -41,7 +41,7 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: Result): Unit {
         when {
-            call.method == "saveImageToGallery" -> {
+            call.method == "saveToKoi" -> {
                 val image = call.argument<ByteArray>("imageBytes") ?: return
                 val quality = call.argument<Int>("quality") ?: return
                 val name = call.argument<String>("name")
