@@ -129,7 +129,7 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
                 saveToKoi(bmp, quality, name)
             }
         }
-        SaveResultModel(true, null, null).toHashMap()
+        return SaveResultModel(true, null, null).toHashMap()
     }
 
     private fun saveToKoi(bmp: Bitmap, quality: Int, name: String?): HashMap<String, Any?>{
