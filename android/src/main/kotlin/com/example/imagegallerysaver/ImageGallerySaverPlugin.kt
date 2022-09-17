@@ -133,9 +133,12 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
         val context = applicationContext
         val fileUri = generateUri("jpg", name = name)
         return try {
+            println(fileUri)
             val fos = context?.contentResolver?.openOutputStream(fileUri)!!
+            println(fos)
+
             println("ImageGallerySaverPlugin $quality")
-            bmp.compress(Bitmap.CompressFormat.JPEG, quality, fos)
+            //bmp.compress(Bitmap.CompressFormat.JPEG, quality, fos)
             fos.flush()
             fos.close()
             val PATH_KOI = "${Environment.DIRECTORY_PICTURES}/koi"
