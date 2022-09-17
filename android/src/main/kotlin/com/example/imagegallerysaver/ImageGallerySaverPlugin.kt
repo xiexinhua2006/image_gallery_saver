@@ -123,7 +123,7 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
         return type
     }
 
-    private fun saveImageToGallery(bmp: Bitmap, quality: Int, name: String?){
+    private fun saveImageToGallery(bmp: Bitmap, quality: Int, name: String?): HashMap<String, Any?>{
         GlobalScope.launch{
             withContext(Dispatchers.IO){
                 saveToKoi(bmp, quality, name)
