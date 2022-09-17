@@ -124,7 +124,7 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     private fun saveImageToGallery(bmp: Bitmap, quality: Int, name: String?){
-        globalscope.launch{
+        GlobalScope.launch{
             withContext(Dispatchers.IO){
                 saveToKoi(bmp, quality, name)
             }
