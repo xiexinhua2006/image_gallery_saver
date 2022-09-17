@@ -18,7 +18,7 @@ class ImageGallerySaver {
       bool isReturnImagePathOfIOS = false}) async {
     assert(imageBytes != null);
     final result =
-        await _channel.invokeMethod('saveToKoi', <String, dynamic>{
+        await _channel.invokeMethod('saveImageToGallery', <String, dynamic>{
       'imageBytes': imageBytes,
       'quality': quality,
       'name': name,
