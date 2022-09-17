@@ -24,7 +24,6 @@ import android.text.TextUtils
 import android.webkit.MimeTypeMap
 
 
-
 class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
     private var applicationContext: Context? = null
     private var methodChannel: MethodChannel? = null
@@ -109,7 +108,7 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
             //println (absfilePath)
             MediaScannerConnection.scanFile(context
                     , arrayOf(absfilePath)
-                    , arrayOf("image/png"), null)
+                    , arrayOf("image/jpeg"), null)
             return Uri.fromFile(File(appDir, fileName))
         }
     }
@@ -132,12 +131,11 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
         }
 
         val context = applicationContext
-        val fileUri = generateUri("png", name = name)
+        val fileUri = generateUri("jpg", name = name)
         return try {
             val fos = context?.contentResolver?.openOutputStream(fileUri)!!
-            println (fos)
             println("ImageGallerySaverPlugin $quality")
-            bmp.compress(Bitmap.CompressFormat.PNG, quality, fos)
+            bmp.compress(Bitmap.CompressFormat.JPEG, quality, fos)
             fos.flush()
             fos.close()
             val PATH_KOI = "${Environment.DIRECTORY_PICTURES}/koi"
