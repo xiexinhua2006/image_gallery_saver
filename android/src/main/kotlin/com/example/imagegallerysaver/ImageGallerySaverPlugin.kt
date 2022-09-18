@@ -57,7 +57,12 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
                 val quality = call.argument<Int>("quality") ?: return
                 val name = call.argument<String>("name")
 
-                result.success(saveImageToGallery_URL(BitmapFactory.decodeByteArray(image, 0, image.size), quality, name))
+                val url = URL(image_url)
+                val conn = url.openConnection() as HttpURLConnection
+                val `is` = conn.inputStream
+
+
+                result.success(saveImageToGallery(BitmapFactory.decodeStream(`is`), quality, name))
             }
 
             call.method == "saveFileToGallery" -> {
@@ -145,16 +150,6 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
         return SaveResultModel(true, null, null).toHashMap()
     }
 
-    private fun saveImageToGallery_URL(imageURL: String, quality: Int, name: String?): HashMap<String, Any?>{
-        GlobalScope.launch{
-            withContext(Dispatchers.IO){
-                saveToKoi_URL(imageURL, quality, name)
-            }
-        }
-        //返回假数据XD
-        return SaveResultModel(true, null, null).toHashMap()
-    }
-
     private fun saveToKoi(bmp: Bitmap, quality: Int, name: String?): HashMap<String, Any?>{
 
         var fileName = name ?: System.currentTimeMillis().toString()
@@ -184,42 +179,6 @@ class ImageGallerySaverPlugin : FlutterPlugin, MethodCallHandler {
         }
     }
 
-    private fun saveToKoi_URL(imageURL: String, quality: Int, name: String?): HashMap<String, Any?>{
-
-        var bmp = getImage(imageURL)
-        var fileName = name ?: System.currentTimeMillis().toString()
-        val PATH = "${Environment.DIRECTORY_PICTURES}/koi"
-        val koi_directory = File(PATH)
-        if (!koi_directory.exists()) {
-            koi_directory.mkdir()
-        }
-
-        val context = applicationContext
-        val fileUri = generateUri("jpg", name = name)
-        return try {
-            val fos = context?.contentResolver?.openOutputStream(fileUri)!!
-            println("ImageGallerySaverPlugin $quality")
-            bmp.compress(Bitmap.CompressFormat.JPEG, quality, fos)
-            fos.flush()
-            fos.close()
-
-            val PATH_KOI = "${Environment.DIRECTORY_PICTURES}/koi"
-            val PATH_KOI_IMAGE = PATH_KOI + "/" + fileName
-            context!!.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + PATH_KOI_IMAGE)))
-            bmp.recycle()
-            SaveResultModel(fileUri.toString().isNotEmpty(), fileUri.toString(), null).toHashMap()
-            //println('OK')
-        } catch (e: IOException) {
-            SaveResultModel(false, null, e.toString()).toHashMap()
-        }
-    }
-
-    private fun getImage(path: String?): Bitmap? {
-        val url = URL(path)
-        val conn = url.openConnection() as HttpURLConnection
-        val `is` = conn.inputStream
-        return BitmapFactory.decodeStream(`is`)
-    }
 
     private fun saveFileToGallery(filePath: String, name: String?): HashMap<String, Any?> {
         val context = applicationContext
